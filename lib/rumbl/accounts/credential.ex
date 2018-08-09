@@ -2,12 +2,11 @@ defmodule Rumbl.Accounts.Credential do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "credentials" do
-    field :email, :string
-    field :password, :string, virtual: true
-    field :password_hash, :string
-    belongs_to :user, Rumbl.Accounts.User
+    field(:email, :string)
+    field(:password, :string, virtual: true)
+    field(:password_hash, :string)
+    belongs_to(:user, Rumbl.Accounts.User)
 
     timestamps()
   end

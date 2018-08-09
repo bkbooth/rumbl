@@ -25,13 +25,13 @@ defmodule RumblWeb.ChannelCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Rumbl.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Rumbl.Repo, {:shared, self()})
     end
+
     :ok
   end
-
 end

@@ -1,5 +1,4 @@
 defmodule Rumbl.Accounts do
-
   @moduledoc """
   The Accounts context.
   """
