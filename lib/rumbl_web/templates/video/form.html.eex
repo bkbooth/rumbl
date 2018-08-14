@@ -9,6 +9,11 @@
   <%= text_input f, :url %>
   <%= error_tag f, :url %>
 
+  <%= label f, :category_id %>
+  <%= select f, :category_id,
+                category_select_options(@categories),
+                prompt: "Choose a category" %>
+
   <%= label f, :title %>
   <%= text_input f, :title %>
   <%= error_tag f, :title %>

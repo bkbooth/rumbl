@@ -9,6 +9,21 @@ defmodule Rumbl.Multimedia do
   alias Rumbl.Accounts
 
   @doc """
+  Returns an alphabetically sorted list of categories.
+
+  ## Examples
+
+      iex> list_alphabetical_categories()
+      [%Category{}, ...]
+
+  """
+  def list_alphabetical_categories do
+    Category
+    |> Category.alphabetical()
+    |> Repo.all()
+  end
+
+  @doc """
   Creates a category if it doesn't already exist.
 
   ## Examples
