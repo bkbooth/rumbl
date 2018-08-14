@@ -3,12 +3,12 @@ defmodule Rumbl.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-      add :name, :string
-      add :username, :string, null: false
+      add(:name, :string)
+      add(:username, :string, null: false)
 
       timestamps()
     end
 
-    create unique_index(:users, [:username])
+    create(unique_index(:users, [:username]))
   end
 end
