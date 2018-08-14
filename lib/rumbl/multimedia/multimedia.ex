@@ -5,8 +5,21 @@ defmodule Rumbl.Multimedia do
 
   import Ecto.Query, warn: false
   alias Rumbl.Repo
-  alias Rumbl.Multimedia.Video
+  alias Rumbl.Multimedia.{Category, Video}
   alias Rumbl.Accounts
+
+  @doc """
+  Creates a category if it doesn't already exist.
+
+  ## Examples
+
+      iex> create_category("some category")
+      %Category{}
+
+  """
+  def create_category(name) do
+    Repo.get_by(Category, name: name) || Repo.insert!(%Category{name: name})
+  end
 
   @doc """
   Returns the list of videos.
