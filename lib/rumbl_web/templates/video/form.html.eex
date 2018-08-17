@@ -13,6 +13,7 @@
   <%= select f, :category_id,
                 category_select_options(@categories),
                 prompt: "Choose a category" %>
+  <%= error_tag f, :category %>
 
   <%= label f, :title %>
   <%= text_input f, :title %>
