@@ -1,5 +1,7 @@
 # Rumbl
 
+[![Build Status](https://travis-ci.org/bkbooth/rumbl.svg?branch=master)](https://travis-ci.org/bkbooth/rumbl)
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
