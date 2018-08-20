@@ -4,9 +4,23 @@ defmodule Rumbl.Multimedia do
   """
 
   import Ecto.Query, warn: false
+
   alias Rumbl.Repo
   alias Rumbl.Multimedia.{Category, Video}
   alias Rumbl.Accounts
+
+  @doc """
+  Creates a category if it doesn't already exist.
+
+  ## Examples
+
+      iex> create_category("some category")
+      %Category{}
+
+  """
+  def create_category(name) do
+    Repo.get_by(Category, name: name) || Repo.insert!(%Category{name: name})
+  end
 
   @doc """
   Returns an alphabetically sorted list of categories.
@@ -21,19 +35,6 @@ defmodule Rumbl.Multimedia do
     Category
     |> Category.alphabetical()
     |> Repo.all()
-  end
-
-  @doc """
-  Creates a category if it doesn't already exist.
-
-  ## Examples
-
-      iex> create_category("some category")
-      %Category{}
-
-  """
-  def create_category(name) do
-    Repo.get_by(Category, name: name) || Repo.insert!(%Category{name: name})
   end
 
   @doc """
@@ -81,23 +82,10 @@ defmodule Rumbl.Multimedia do
     |> preload_user()
   end
 
-  @doc """
-  Creates a video.
+  defp preload_user(video_or_videos), do: Repo.preload(video_or_videos, :user)
 
-  ## Examples
-
-      iex> create_video(user, %{field: value})
-      {:ok, %Video{}}
-
-      iex> create_video(user, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_video(%Accounts.User{} = user, attrs \\ %{}) do
-    %Video{}
-    |> Video.changeset(attrs)
-    |> put_user(user)
-    |> Repo.insert()
+  defp user_videos_query(query, %Accounts.User{id: user_id}) do
+    from(v in query, where: v.user_id == ^user_id)
   end
 
   @doc """
@@ -135,6 +123,25 @@ defmodule Rumbl.Multimedia do
   end
 
   @doc """
+  Creates a video.
+
+  ## Examples
+
+      iex> create_video(user, %{field: value})
+      {:ok, %Video{}}
+
+      iex> create_video(user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_video(%Accounts.User{} = user, attrs \\ %{}) do
+    %Video{}
+    |> Video.changeset(attrs)
+    |> put_user(user)
+    |> Repo.insert()
+  end
+
+  @doc """
   Returns an `%Ecto.Changeset{}` for tracking video changes.
 
   ## Examples
@@ -149,15 +156,7 @@ defmodule Rumbl.Multimedia do
     |> put_user(user)
   end
 
-  defp preload_user(video_or_videos) do
-    Repo.preload(video_or_videos, :user)
-  end
-
   defp put_user(changeset, user) do
     Ecto.Changeset.put_assoc(changeset, :user, user)
-  end
-
-  defp user_videos_query(query, %Accounts.User{id: user_id}) do
-    from(v in query, where: v.user_id == ^user_id)
   end
 end

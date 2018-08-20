@@ -1,32 +1,14 @@
 defmodule RumblWeb.VideoControllerTest do
   use RumblWeb.ConnCase
 
-  test "requires user authentication on all actions", %{conn: conn} do
-    Enum.each(
-      [
-        get(conn, Routes.video_path(conn, :new)),
-        get(conn, Routes.video_path(conn, :index)),
-        get(conn, Routes.video_path(conn, :show, "123")),
-        get(conn, Routes.video_path(conn, :edit, "123")),
-        get(conn, Routes.video_path(conn, :update, "123", %{})),
-        get(conn, Routes.video_path(conn, :create, %{})),
-        get(conn, Routes.video_path(conn, :delete, "123"))
-      ],
-      fn conn ->
-        assert html_response(conn, 302)
-        assert conn.halted
-      end
-    )
-  end
+  alias Rumbl.Multimedia
+
+  @create_attrs %{url: "http://youtu.be", title: "vid", description: "a vid"}
+  @invalid_attrs %{title: "invalid"}
+
+  defp video_count, do: Enum.count(Multimedia.list_videos())
 
   describe "with a logged-in user" do
-    alias Rumbl.Multimedia
-
-    @create_attrs %{url: "http://youtu.be", title: "vid", description: "a vid"}
-    @invalid_attrs %{title: "invalid"}
-
-    defp video_count, do: Enum.count(Multimedia.list_videos())
-
     setup %{conn: conn, login_as: username} do
       user = user_fixture(username: username)
       conn = assign(conn, :current_user, user)
@@ -65,5 +47,23 @@ defmodule RumblWeb.VideoControllerTest do
       assert html_response(conn, 200) =~ "check the errors"
       assert video_count() == count_before
     end
+  end
+
+  test "requires user authentication on all actions", %{conn: conn} do
+    Enum.each(
+      [
+        get(conn, Routes.video_path(conn, :new)),
+        get(conn, Routes.video_path(conn, :index)),
+        get(conn, Routes.video_path(conn, :show, "123")),
+        get(conn, Routes.video_path(conn, :edit, "123")),
+        get(conn, Routes.video_path(conn, :update, "123", %{})),
+        get(conn, Routes.video_path(conn, :create, %{})),
+        get(conn, Routes.video_path(conn, :delete, "123"))
+      ],
+      fn conn ->
+        assert html_response(conn, 302)
+        assert conn.halted
+      end
+    )
   end
 end

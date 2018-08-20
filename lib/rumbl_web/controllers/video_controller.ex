@@ -1,31 +1,22 @@
 defmodule RumblWeb.VideoController do
   use RumblWeb, :controller
 
-  plug(:load_categories when action in [:new, :create, :edit, :update])
-
   alias Rumbl.Multimedia
   alias Rumbl.Multimedia.Video
+
+  plug(:load_categories when action in [:new, :create, :edit, :update])
+
+  defp load_categories(conn, _) do
+    assign(conn, :categories, Multimedia.list_alphabetical_categories())
+  end
+
+  def action(conn, _) do
+    apply(__MODULE__, action_name(conn), [conn, conn.params, conn.assigns.current_user])
+  end
 
   def index(conn, _params, current_user) do
     videos = Multimedia.list_user_videos(current_user)
     render(conn, "index.html", videos: videos)
-  end
-
-  def new(conn, _params, current_user) do
-    changeset = Multimedia.change_video(current_user, %Video{})
-    render(conn, "new.html", changeset: changeset)
-  end
-
-  def create(conn, %{"video" => video_params}, current_user) do
-    case Multimedia.create_video(current_user, video_params) do
-      {:ok, video} ->
-        conn
-        |> put_flash(:info, "Video created successfully.")
-        |> redirect(to: Routes.video_path(conn, :show, video))
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
-    end
   end
 
   def show(conn, %{"id" => id}, current_user) do
@@ -62,12 +53,20 @@ defmodule RumblWeb.VideoController do
     |> redirect(to: Routes.video_path(conn, :index))
   end
 
-  def action(conn, _) do
-    args = [conn, conn.params, conn.assigns.current_user]
-    apply(__MODULE__, action_name(conn), args)
+  def new(conn, _params, current_user) do
+    changeset = Multimedia.change_video(current_user, %Video{})
+    render(conn, "new.html", changeset: changeset)
   end
 
-  defp load_categories(conn, _) do
-    assign(conn, :categories, Multimedia.list_alphabetical_categories())
+  def create(conn, %{"video" => video_params}, current_user) do
+    case Multimedia.create_video(current_user, video_params) do
+      {:ok, video} ->
+        conn
+        |> put_flash(:info, "Video created successfully.")
+        |> redirect(to: Routes.video_path(conn, :show, video))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "new.html", changeset: changeset)
+    end
   end
 end
