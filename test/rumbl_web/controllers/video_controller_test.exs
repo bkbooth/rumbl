@@ -49,6 +49,29 @@ defmodule RumblWeb.VideoControllerTest do
     end
   end
 
+  test "authorizes actions against access by other users", %{conn: conn} do
+    owner = user_fixture(username: "owner")
+    video = video_fixture(owner, @create_attrs)
+    non_owner = user_fixture(username: "sneaky")
+    conn = assign(conn, :current_user, non_owner)
+
+    assert_error_sent(:not_found, fn ->
+      get(conn, Routes.video_path(conn, :show, video))
+    end)
+
+    assert_error_sent(:not_found, fn ->
+      get(conn, Routes.video_path(conn, :edit, video))
+    end)
+
+    assert_error_sent(:not_found, fn ->
+      get(conn, Routes.video_path(conn, :update, video, video: @create_attrs))
+    end)
+
+    assert_error_sent(:not_found, fn ->
+      get(conn, Routes.video_path(conn, :delete, video))
+    end)
+  end
+
   test "requires user authentication on all actions", %{conn: conn} do
     Enum.each(
       [
