@@ -3,7 +3,7 @@ defmodule Rumbl.Multimedia do
   The Multimedia context.
   """
 
-  import Ecto.Query, warn: false
+import Ecto.Query, warn: false
 
   alias Rumbl.Repo
   alias Rumbl.Multimedia.{Category, Video}
