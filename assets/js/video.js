@@ -21,6 +21,8 @@ let Video = {
     vidChannel.join()
       .receive("ok", resp => console.log("joined the video channel", resp))
       .receive("error", reason => console.log("join failed", reason))
+
+    vidChannel.on("ping", (data) => console.log("PING", data.count))
   },
 }
 
